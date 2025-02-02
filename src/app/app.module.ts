@@ -5,24 +5,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
-import { KeycloakService, provideKeycloak } from 'keycloak-angular';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-
-// function initializeKeycloak(keycloak: KeycloakService) {
-//   return () =>
-//     keycloak.init({
-//       config: {
-//         url: 'http://localhost:7080/',
-//         realm: 'my-budget',
-//         clientId: 'my-budget-ac',
-//       },
-//       initOptions: {
-//         pkceMethod: 'S256',
-//         redirectUri: 'http://localhost:4200/dashboard',
-//       },
-//       loadUserProfileAtStartUp: false,
-//     });
-// }
+import { StoreModule } from '@ngrx/store';
+import { AppEffects, appReducer } from './state';
+import { EffectsModule } from '@ngrx/effects';
+import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,28 +18,33 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     HeaderComponent,
     DashboardComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    StoreModule.forRoot({ appReducer }),
+    EffectsModule.forRoot([AppEffects]),
+  ],
   providers: [
-    provideKeycloak({
-      config: {
-        url: 'http://localhost:7080/',
-        realm: 'my-budget',
-        clientId: 'my-budget-ac',
-      },
-      initOptions: {
-        pkceMethod: 'S256',
-        redirectUri: 'http://localhost:4200/dashboard',
-      },
-      // loadUserProfileAtStartUp: false,
-    }),
+    provideHttpClient(
+      withXsrfConfiguration({
+        cookieName: 'XSRF-TOKEN',
+        headerName: 'X-XSRF-TOKEN',
+      })
+    ),
   ],
   // providers: [
-  //   {
-  //     provide: APP_INITIALIZER,
-  //     useFactory: initializeKeycloak,
-  //     multi: true,
-  //     deps: [KeycloakService],
-  //   },
+  //   provideKeycloak({
+  //     config: {
+  //       url: 'http://localhost:7080/',
+  //       realm: 'my-budget',
+  //       clientId: 'my-budget-ac',
+  //     },
+  //     initOptions: {
+  //       pkceMethod: 'S256',
+  //       redirectUri: 'http://localhost:4200/dashboard',
+  //     },
+  //     // loadUserProfileAtStartUp: false,
+  //   }),
   // ],
   bootstrap: [AppComponent],
 })

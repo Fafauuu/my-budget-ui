@@ -14,22 +14,22 @@
     </div>
     <nav class="hright dnav">
       <ul>
-        <li *ngIf="true" routerLinkActive="active">
+        <!-- <li *ngIf="loggedIn$ | async" routerLinkActive="active">
           <a routerLink="/home">Home</a>
-        </li>
-        <li *ngIf="true" routerLinkActive="active">
+        </li> -->
+        <li *ngIf="!(loggedIn$ | async)" routerLinkActive="active">
           <a (click)="login()">Login</a>
         </li>
-        <li *ngIf="true" routerLinkActive="active">
+        <!-- <li *ngIf="true" routerLinkActive="active">
           <a routerLink="/contact">Contact US</a>
         </li>
         <li *ngIf="true" routerLinkActive="active">
           <a routerLink="/notices">Notices</a>
-        </li>
-        <li *ngIf="false" routerLinkActive="active">
+        </li> -->
+        <li *ngIf="loggedIn$ | async" routerLinkActive="active">
           <a routerLink="/dashboard">Dashboard</a>
         </li>
-        <li *ngIf="false" routerLinkActive="active">
+        <li *ngIf="loggedIn$ | async" routerLinkActive="active">
           <a (click)="logout()">Logout</a>
         </li>
       </ul>

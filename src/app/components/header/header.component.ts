@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import { KeycloakService } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
+import { Observable, map } from 'rxjs';
+import { AppActions, getIsLoggedIn } from '../../state';
 
 @Component({
   selector: 'app-header',
@@ -10,22 +13,25 @@ import Keycloak from 'keycloak-js';
   standalone: false,
 })
 export class HeaderComponent implements OnInit {
-  public isLoggedIn = false;
+  private store$ = inject(Store);
+  public loggedIn$: Observable<boolean>;
 
-  constructor(private readonly keycloak: Keycloak) {}
+  // constructor(private readonly keycloak: Keycloak) {}
 
-  public async ngOnInit() {
+  public ngOnInit() {
     console.log('init');
-    // this.isLoggedIn = await this.keycloak.isLoggedIn();
+    this.loggedIn$ = this.store$.pipe(select(getIsLoggedIn));
   }
 
   public login() {
     console.log('login');
-    this.keycloak.login();
+    this.store$.dispatch(AppActions.login());
+    // this.keycloak.login();
   }
 
   public logout() {
     console.log('logout');
+    this.store$.dispatch(AppActions.logout());
     // let redirectURI: string = 'http://localhost:4200/home';
     // this.keycloak.logout(redirectURI);
   }
